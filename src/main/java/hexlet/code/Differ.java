@@ -2,23 +2,19 @@ package hexlet.code;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.Differ.DiffDescription.ChangeType;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
-import hexlet.code.Differ.DiffDescription.CHANGE_TYPE;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class Differ {
-
-    private final static String PROPERTY_CHANGE_TYPE = "change type";
-    private final static String PROPERTY_FIRST_VALUE = "first value";
-    private final static String PROPERTY_SECOND_VALUE = "second value";
-
-    private final static String CHANGE_TYPE_ADDED = "added";
-    private final static String CHANGE_TYPE_DELETED = "deleted";
-    private final static String CHANGE_TYPE_MODIFIED = "modified";
-    private final static String CHANGE_TYPE_NO_CHANGES = "no changes";
 
     public static String generate(String filepath1, String filepath2) throws IOException {
 
@@ -40,7 +36,7 @@ public class Differ {
         }
 
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(content, new TypeReference<Map<String, String>>() {});
+        return mapper.readValue(content, new TypeReference<Map<String, String>>() { });
     }
 
     private static Map<String, DiffDescription> getDiff(Map<String, String> data1, Map<String, String> data2) {
@@ -53,19 +49,19 @@ public class Differ {
         for (String key : keySet) {
 
             if (data1.containsKey(key) && !data2.containsKey(key)) {
-                diff.put(key, new DiffDescription(CHANGE_TYPE.DELETED, data1.get(key), null));
+                diff.put(key, new DiffDescription(ChangeType.DELETED, data1.get(key), null));
                 continue;
             }
 
             if (!data1.containsKey(key) && data2.containsKey(key)) {
-                diff.put(key, new DiffDescription(CHANGE_TYPE.ADDED, null, data2.get(key)));
+                diff.put(key, new DiffDescription(ChangeType.ADDED, null, data2.get(key)));
                 continue;
             }
 
             if (Objects.equals(data1.get(key), data2.get(key))) {
-                diff.put(key, new DiffDescription(CHANGE_TYPE.NO_CHANGES, data1.get(key), data2.get(key)));
+                diff.put(key, new DiffDescription(ChangeType.NO_CHANGES, data1.get(key), data2.get(key)));
             } else {
-                diff.put(key, new DiffDescription(CHANGE_TYPE.MODIFIED, data1.get(key), data2.get(key)));
+                diff.put(key, new DiffDescription(ChangeType.MODIFIED, data1.get(key), data2.get(key)));
             }
 
         }
@@ -103,17 +99,17 @@ public class Differ {
     }
 
     static class DiffDescription {
-        public enum CHANGE_TYPE {
+        public enum ChangeType {
             ADDED,
             DELETED,
             MODIFIED,
             NO_CHANGES
         }
-        private final CHANGE_TYPE type;
+        private final ChangeType type;
         private final String firstValue;
         private final String secondValue;
 
-        public CHANGE_TYPE getType() {
+        public ChangeType getType() {
             return type;
         }
 
@@ -125,7 +121,7 @@ public class Differ {
             return secondValue;
         }
 
-        public DiffDescription(CHANGE_TYPE type, String firstValue, String secondValue) {
+        DiffDescription(ChangeType type, String firstValue, String secondValue) {
             this.type = type;
             this.firstValue = firstValue;
             this.secondValue = secondValue;

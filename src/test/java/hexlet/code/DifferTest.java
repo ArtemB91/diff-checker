@@ -2,16 +2,17 @@ package hexlet.code;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class DifferTest {
 
     @TempDir
-    Path tempDir;
+    private Path tempDir;
 
     @Test
     public void testGenerate() throws IOException {
@@ -45,8 +46,7 @@ public class DifferTest {
                   + timeout: 20
                   + verbose: true
                 }""";
-
-        String actual = Differ.generate(file1Path.toString(),file2Path.toString());
+        String actual = Differ.generate(file1Path.toString(), file2Path.toString());
 
         assertEquals(expected, actual);
 
@@ -62,10 +62,8 @@ public class DifferTest {
                 """
                 {
                 }""";
-
-        String actual = Differ.generate(file1Path.toString(),file2Path.toString());
+        String actual = Differ.generate(file1Path.toString(), file2Path.toString());
 
         assertEquals(expected, actual);
-
     }
 }
