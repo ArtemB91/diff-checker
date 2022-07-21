@@ -1,11 +1,10 @@
 package hexlet.code;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.Differ.DiffDescription.ChangeType;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,26 +17,35 @@ public class Differ {
 
     public static String generate(String filepath1, String filepath2) throws IOException {
 
-        String contentFile1 = new String(Files.readAllBytes(Paths.get(filepath1)));
-        String contentFile2 = new String(Files.readAllBytes(Paths.get(filepath2)));
+        Path path1 = Paths.get(filepath1);
+        Path path2 = Paths.get(filepath2);
 
-        Map<String, String> data1 = getData(contentFile1);
-        Map<String, String> data2 = getData(contentFile2);
+        String contentFile1 = new String(Files.readAllBytes(path1));
+        String contentFile2 = new String(Files.readAllBytes(path2));
+
+        String file1Ext = Utils.getFileExtension(path1.getFileName().toString());
+        String file2Ext = Utils.getFileExtension(path2.getFileName().toString());
+
+        Map<String, String> data1 = getData(contentFile1, file1Ext);
+        Map<String, String> data2 = getData(contentFile2, file2Ext);
 
         Map<String, DiffDescription> diff = getDiff(data1, data2);
 
         return diffToString(diff);
     }
 
-    private static Map<String, String> getData(String content) throws IOException {
+    private static Map<String, String> getData(String content, String extension) throws IOException {
 
         if (content.isEmpty()) {
             return new HashMap<>();
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(content, new TypeReference<Map<String, String>>() { });
+        Parser parser = new Parser(content, extension);
+        return parser.parse();
+
     }
+
+
 
     private static Map<String, DiffDescription> getDiff(Map<String, String> data1, Map<String, String> data2) {
         Set<String> keySet = new HashSet<>();

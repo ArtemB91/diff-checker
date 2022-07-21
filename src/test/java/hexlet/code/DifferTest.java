@@ -6,6 +6,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -13,28 +14,13 @@ public class DifferTest {
 
     @TempDir
     private Path tempDir;
+    private Path resourceDirectory = Paths.get("src", "test", "resources");
 
     @Test
-    public void testGenerate() throws IOException {
+    public void testGenerateWithJSONFiles() throws IOException {
 
-        String json1 = """
-                {
-                  "host": "hexlet.io",
-                  "timeout": 50,
-                  "proxy": "123.234.53.22",
-                  "follow": false
-                }
-                """;
-        Path file1Path = Files.write(tempDir.resolve("file1.json"), json1.getBytes());
-
-        String json2 = """
-                {
-                  "timeout": 20,
-                  "verbose": true,
-                  "host": "hexlet.io"
-                }
-                """;
-        Path file2Path = Files.write(tempDir.resolve("file2.json"), json2.getBytes());
+        Path filepath1 = resourceDirectory.resolve("File1.json");
+        Path filepath2 = resourceDirectory.resolve("File2.json");
 
         String expected =
                 """
@@ -46,7 +32,29 @@ public class DifferTest {
                   + timeout: 20
                   + verbose: true
                 }""";
-        String actual = Differ.generate(file1Path.toString(), file2Path.toString());
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString());
+
+        assertEquals(expected, actual);
+
+    }
+
+    @Test
+    public void testGenerateWithYAMLFiles() throws IOException {
+
+        Path filepath1 = resourceDirectory.resolve("File1.yml");
+        Path filepath2 = resourceDirectory.resolve("File2.yml");
+
+        String expected =
+                """
+                {
+                  - follow: false
+                    host: hexlet.io
+                  - proxy: 123.234.53.22
+                  - timeout: 50
+                  + timeout: 20
+                  + verbose: true
+                }""";
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString());
 
         assertEquals(expected, actual);
 
