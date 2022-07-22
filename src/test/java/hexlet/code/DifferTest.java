@@ -137,4 +137,16 @@ public class DifferTest {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void generateJSONDiffOfJSONFiles() throws IOException {
+        Path filepath1 = resourceDirectory.resolve("File1.json");
+        Path filepath2 = resourceDirectory.resolve("File2.json");
+
+        IFormatter formatter = Formatter.newFormatter(Formatter.FormatType.JSON);
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString(), formatter);
+
+        String expected = new String(Files.readAllBytes(resourceDirectory.resolve("JSONdiff.json")));
+        assertEquals(expected, actual);
+    }
 }

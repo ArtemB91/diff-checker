@@ -14,7 +14,6 @@ public final class StylishFormatter implements IFormatter {
         for (Map.Entry<String, Differ.DiffDescription> keyAndDesc: diff.entrySet()) {
             String key = keyAndDesc.getKey();
             Differ.DiffDescription diffDesc = keyAndDesc.getValue();
-
             switch (diffDesc.getType()) {
                 case ADDED:
                     joiner.add(String.format(strTemplate, "+", key, diffDesc.getSecondValue()));

@@ -1,6 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.formatters.IFormatter;
+import hexlet.code.formatters.JSONFormatter;
 import hexlet.code.formatters.PlainFormatter;
 import hexlet.code.formatters.StylishFormatter;
 
@@ -10,7 +11,8 @@ public class Formatter {
 
     public enum FormatType {
         STYLISH,
-        PLAIN
+        PLAIN,
+        JSON
     }
 
     public static IFormatter newFormatter(FormatType formatType) {
@@ -27,7 +29,15 @@ public class Formatter {
             return new PlainFormatter();
         }
 
+        if (formatType == FormatType.JSON) {
+            return new JSONFormatter();
+        }
+
         throw new RuntimeException(formatType + " - is invalid format type");
+    }
+
+    public static IFormatter newFormatter() {
+        return new StylishFormatter(); // by default
     }
 
     public static FormatType getFormatType(String format) {
@@ -41,6 +51,10 @@ public class Formatter {
 
         if (format.equalsIgnoreCase("plain")) {
             return FormatType.PLAIN;
+        }
+
+        if (format.equalsIgnoreCase("json")) {
+            return FormatType.JSON;
         }
 
         throw new RuntimeException(
