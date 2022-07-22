@@ -27,8 +27,7 @@ public final class App implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        Formatter.FormatType formatType = Formatter.getFormatType(format);
-        String diffResult = Differ.generate(filepath1, filepath2, Formatter.newFormatter(formatType));
+        String diffResult = Differ.generate(filepath1, filepath2, format);
         System.out.println(diffResult);
         return 0;
     }

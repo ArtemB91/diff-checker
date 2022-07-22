@@ -1,6 +1,5 @@
 package hexlet.code;
 
-import hexlet.code.formatters.IFormatter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -117,8 +116,7 @@ public class DifferTest {
         Path filepath1 = resourceDirectory.resolve("File1.json");
         Path filepath2 = resourceDirectory.resolve("File2.json");
 
-        IFormatter formatter = Formatter.newFormatter(Formatter.FormatType.PLAIN);
-        String actual = Differ.generate(filepath1.toString(), filepath2.toString(), formatter);
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString(), "plain");
         String expected =
                 """
                 Property 'chars2' was updated. From [complex value] to false
@@ -143,8 +141,7 @@ public class DifferTest {
         Path filepath1 = resourceDirectory.resolve("File1.json");
         Path filepath2 = resourceDirectory.resolve("File2.json");
 
-        IFormatter formatter = Formatter.newFormatter(Formatter.FormatType.JSON);
-        String actual = Differ.generate(filepath1.toString(), filepath2.toString(), formatter);
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString(), "json");
 
         String expected = new String(Files.readAllBytes(resourceDirectory.resolve("JSONdiff.json")));
         assertEquals(expected, actual);
