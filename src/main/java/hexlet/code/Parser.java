@@ -14,8 +14,8 @@ public class Parser {
 
     private final String extension;
 
-    Parser(String extension) {
-        this.extension = extension;
+    Parser(String ext) {
+        this.extension = ext;
     }
 
     public final Map<String, Object> parse(String content) throws IOException {

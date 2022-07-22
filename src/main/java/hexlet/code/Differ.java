@@ -102,10 +102,10 @@ public class Differ {
             return secondValue;
         }
 
-        DiffDescription(ChangeType type, Object firstValue, Object secondValue) {
-            this.type = type;
-            this.firstValue = firstValue;
-            this.secondValue = secondValue;
+        DiffDescription(ChangeType changeType, Object oldValue, Object newValue) {
+            this.type = changeType;
+            this.firstValue = oldValue;
+            this.secondValue = newValue;
         }
 
     }
