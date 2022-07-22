@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import hexlet.code.formatters.IFormatter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -17,7 +18,7 @@ public class DifferTest {
     private final Path resourceDirectory = Paths.get("src", "test", "resources");
 
     @Test
-    public void testGenerateWithJSONFiles() throws IOException {
+    public void generateStylishFormatWithJSON() throws IOException {
 
         Path filepath1 = resourceDirectory.resolve("File1.json");
         Path filepath2 = resourceDirectory.resolve("File2.json");
@@ -57,7 +58,7 @@ public class DifferTest {
     }
 
     @Test
-    public void testGenerateWithYAMLFiles() throws IOException {
+    public void generateStylishFormatWithYAML() throws IOException {
 
         Path filepath1 = resourceDirectory.resolve("File1.yml");
         Path filepath2 = resourceDirectory.resolve("File2.yml");
@@ -97,7 +98,7 @@ public class DifferTest {
     }
 
     @Test
-    public void testGenerateIfEmpty() throws IOException {
+    public void generateIfEmptyFiles() throws IOException {
 
         Path file1Path = Files.createFile(tempDir.resolve("file1.json"));
         Path file2Path = Files.createFile(tempDir.resolve("file2.json"));
@@ -107,6 +108,32 @@ public class DifferTest {
                 {
                 }""";
         String actual = Differ.generate(file1Path.toString(), file2Path.toString());
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void generatePlainFormatWithJSON() throws IOException {
+        Path filepath1 = resourceDirectory.resolve("File1.json");
+        Path filepath2 = resourceDirectory.resolve("File2.json");
+
+        IFormatter formatter = Formatter.newFormatter(Formatter.FormatType.PLAIN);
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString(), formatter);
+        String expected =
+                """
+                Property 'chars2' was updated. From [complex value] to false
+                Property 'checked' was updated. From false to true
+                Property 'default' was updated. From null to [complex value]
+                Property 'id' was updated. From 45 to null
+                Property 'key1' was removed
+                Property 'key2' was added with value: 'value2'
+                Property 'numbers2' was updated. From [complex value] to [complex value]
+                Property 'numbers3' was removed
+                Property 'numbers4' was added with value: [complex value]
+                Property 'obj1' was added with value: [complex value]
+                Property 'setting1' was updated. From 'Some value' to 'Another value'
+                Property 'setting2' was updated. From 200 to 300
+                Property 'setting3' was updated. From true to 'none'""";
 
         assertEquals(expected, actual);
     }

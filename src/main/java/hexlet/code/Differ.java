@@ -1,6 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.Differ.DiffDescription.ChangeType;
+import hexlet.code.formatters.IFormatter;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,10 +17,10 @@ import java.util.TreeMap;
 public class Differ {
 
     public static String generate(String filepath1, String filepath2) throws IOException {
-        return generate(filepath1, filepath2, new Formatter(Formatter.FormatType.STYLISH));
+        return generate(filepath1, filepath2, Formatter.newFormatter(Formatter.FormatType.STYLISH));
     }
 
-    public static String generate(String filepath1, String filepath2, Formatter formatter) throws IOException {
+    public static String generate(String filepath1, String filepath2, IFormatter formatter) throws IOException {
 
         Path path1 = Paths.get(filepath1);
         Path path2 = Paths.get(filepath2);
@@ -78,8 +79,7 @@ public class Differ {
         return diff;
     }
 
-
-    static class DiffDescription {
+    public static final class DiffDescription {
         public enum ChangeType {
             ADDED,
             DELETED,
