@@ -16,6 +16,10 @@ import java.util.TreeMap;
 public class Differ {
 
     public static String generate(String filepath1, String filepath2) throws IOException {
+        return generate(filepath1, filepath2, new Formatter(Formatter.FormatType.STYLISH));
+    }
+
+    public static String generate(String filepath1, String filepath2, Formatter formatter) throws IOException {
 
         Path path1 = Paths.get(filepath1);
         Path path2 = Paths.get(filepath2);
@@ -26,28 +30,26 @@ public class Differ {
         String file1Ext = Utils.getFileExtension(path1.getFileName().toString());
         String file2Ext = Utils.getFileExtension(path2.getFileName().toString());
 
-        Map<String, String> data1 = getData(contentFile1, file1Ext);
-        Map<String, String> data2 = getData(contentFile2, file2Ext);
+        Map<String, Object> data1 = getData(contentFile1, file1Ext);
+        Map<String, Object> data2 = getData(contentFile2, file2Ext);
 
         Map<String, DiffDescription> diff = getDiff(data1, data2);
 
-        return diffToString(diff);
+        return formatter.format(diff);
+
     }
 
-    private static Map<String, String> getData(String content, String extension) throws IOException {
+    private static Map<String, Object> getData(String content, String extension) throws IOException {
 
         if (content.isEmpty()) {
             return new HashMap<>();
         }
 
-        Parser parser = new Parser(content, extension);
-        return parser.parse();
-
+        Parser parser = new Parser(extension);
+        return parser.parse(content);
     }
 
-
-
-    private static Map<String, DiffDescription> getDiff(Map<String, String> data1, Map<String, String> data2) {
+    private static Map<String, DiffDescription> getDiff(Map<String, Object> data1, Map<String, Object> data2) {
         Set<String> keySet = new HashSet<>();
         keySet.addAll(data1.keySet());
         keySet.addAll(data2.keySet());
@@ -76,35 +78,6 @@ public class Differ {
         return diff;
     }
 
-    private static String diffToString(Map<String, DiffDescription> diff) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{\n");
-        String strTemplate = "  %s %s: %s\n";
-        for (Map.Entry<String, DiffDescription> keyAndDesc: diff.entrySet()) {
-            String key = keyAndDesc.getKey();
-            DiffDescription diffDesc = keyAndDesc.getValue();
-
-            switch (diffDesc.getType()) {
-                case ADDED:
-                    builder.append(String.format(strTemplate, "+", key, diffDesc.getSecondValue()));
-                    break;
-                case DELETED:
-                    builder.append(String.format(strTemplate, "-", key, diffDesc.getFirstValue()));
-                    break;
-                case MODIFIED:
-                    builder.append(String.format(strTemplate, "-", key, diffDesc.getFirstValue()));
-                    builder.append(String.format(strTemplate, "+", key, diffDesc.getSecondValue()));
-                    break;
-                case NO_CHANGES:
-                    builder.append(String.format(strTemplate, " ", key, diffDesc.getFirstValue()));
-                    break;
-                default:
-                    throw new RuntimeException(key + " - is invalid change type");
-            }
-        }
-        builder.append("}");
-        return builder.toString();
-    }
 
     static class DiffDescription {
         public enum ChangeType {
@@ -114,22 +87,22 @@ public class Differ {
             NO_CHANGES
         }
         private final ChangeType type;
-        private final String firstValue;
-        private final String secondValue;
+        private final Object firstValue;
+        private final Object secondValue;
 
         public ChangeType getType() {
             return type;
         }
 
-        public String getFirstValue() {
+        public Object getFirstValue() {
             return firstValue;
         }
 
-        public String getSecondValue() {
+        public Object getSecondValue() {
             return secondValue;
         }
 
-        DiffDescription(ChangeType type, String firstValue, String secondValue) {
+        DiffDescription(ChangeType type, Object firstValue, Object secondValue) {
             this.type = type;
             this.firstValue = firstValue;
             this.secondValue = secondValue;

@@ -12,17 +12,15 @@ public class Parser {
     private static final String JSON_EXT = "json";
     private static final String YAML_EXT = "yml";
 
-    private final String content;
     private final String extension;
 
-    Parser(String content, String extension) {
-        this.content = content;
+    Parser(String extension) {
         this.extension = extension;
     }
 
-    public final Map<String, String> parse() throws IOException {
+    public final Map<String, Object> parse(String content) throws IOException {
         ObjectMapper mapper = getObjectMapper();
-        return mapper.readValue(content, new TypeReference<Map<String, String>>() { });
+        return mapper.readValue(content, new TypeReference<Map<String, Object>>() { });
     }
 
     private ObjectMapper getObjectMapper() {
