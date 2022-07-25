@@ -1,17 +1,11 @@
 package hexlet.code;
 
-import hexlet.code.Differ.DiffDescription.ChangeType;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeMap;
 
 public class Differ {
 
@@ -33,10 +27,10 @@ public class Differ {
         Map<String, Object> data1 = getData(contentFile1, file1Ext);
         Map<String, Object> data2 = getData(contentFile2, file2Ext);
 
-        Map<String, DiffDescription> diff = getDiff(data1, data2);
+        Map<String, Object> diff = Tree.getDiff(data1, data2);
 
         Formatter.FormatType formatType = Formatter.getFormatType(format);
-        return Formatter.newFormatter(formatType).format(diff);
+        return Formatter.format(diff, formatType);
 
     }
 
@@ -46,67 +40,7 @@ public class Differ {
             return new HashMap<>();
         }
 
-        Parser parser = new Parser(extension);
-        return parser.parse(content);
+        return Parser.parse(content, extension);
     }
 
-    private static Map<String, DiffDescription> getDiff(Map<String, Object> data1, Map<String, Object> data2) {
-        Set<String> keySet = new HashSet<>();
-        keySet.addAll(data1.keySet());
-        keySet.addAll(data2.keySet());
-
-        Map<String, DiffDescription> diff = new TreeMap<>();
-
-        for (String key : keySet) {
-
-            if (data1.containsKey(key) && !data2.containsKey(key)) {
-                diff.put(key, new DiffDescription(ChangeType.DELETED, data1.get(key), null));
-                continue;
-            }
-
-            if (!data1.containsKey(key) && data2.containsKey(key)) {
-                diff.put(key, new DiffDescription(ChangeType.ADDED, null, data2.get(key)));
-                continue;
-            }
-
-            if (Objects.equals(data1.get(key), data2.get(key))) {
-                diff.put(key, new DiffDescription(ChangeType.NO_CHANGES, data1.get(key), data2.get(key)));
-            } else {
-                diff.put(key, new DiffDescription(ChangeType.MODIFIED, data1.get(key), data2.get(key)));
-            }
-
-        }
-        return diff;
-    }
-
-    public static final class DiffDescription {
-        public enum ChangeType {
-            ADDED,
-            DELETED,
-            MODIFIED,
-            NO_CHANGES
-        }
-        private final ChangeType type;
-        private final Object firstValue;
-        private final Object secondValue;
-
-        public ChangeType getType() {
-            return type;
-        }
-
-        public Object getFirstValue() {
-            return firstValue;
-        }
-
-        public Object getSecondValue() {
-            return secondValue;
-        }
-
-        DiffDescription(ChangeType changeType, Object oldValue, Object newValue) {
-            this.type = changeType;
-            this.firstValue = oldValue;
-            this.secondValue = newValue;
-        }
-
-    }
 }

@@ -17,40 +17,39 @@ public class DifferTest {
     private final Path resourceDirectory = Paths.get("src", "test", "resources");
 
     @Test
+    public void generateDefaultFormatWithJSON() throws IOException {
+
+        Path filepath1 = resourceDirectory.resolve("File1.json");
+        Path filepath2 = resourceDirectory.resolve("File2.json");
+
+        String expected = new String(Files.readAllBytes(resourceDirectory.resolve("expectedStylishDiffOfJSONs.txt")));
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString());
+
+        assertEquals(expected, actual);
+
+    }
+
+    @Test
+    public void generateDefaultFormatWithYAML() throws IOException {
+
+        Path filepath1 = resourceDirectory.resolve("File1.yml");
+        Path filepath2 = resourceDirectory.resolve("File2.yml");
+
+        String expected = new String(Files.readAllBytes(resourceDirectory.resolve("expectedStylishDiffOfYAMLs.txt")));
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString());
+
+        assertEquals(expected, actual);
+
+    }
+
+    @Test
     public void generateStylishFormatWithJSON() throws IOException {
 
         Path filepath1 = resourceDirectory.resolve("File1.json");
         Path filepath2 = resourceDirectory.resolve("File2.json");
 
-        String expected =
-                """
-                {
-                    chars1: [a, b, c]
-                  - chars2: [d, e, f]
-                  + chars2: false
-                  - checked: false
-                  + checked: true
-                  - default: null
-                  + default: [value1, value2]
-                  - id: 45
-                  + id: null
-                  - key1: value1
-                  + key2: value2
-                    numbers1: [1, 2, 3, 4]
-                  - numbers2: [2, 3, 4, 5]
-                  + numbers2: [22, 33, 44, 55]
-                  - numbers3: [3, 4, 5]
-                  + numbers4: [4, 5, 6]
-                  + obj1: {nestedKey=value, isNested=true}
-                  - setting1: Some value
-                  + setting1: Another value
-                  - setting2: 200
-                  + setting2: 300
-                  - setting3: true
-                  + setting3: none
-                }""";
-
-        String actual = Differ.generate(filepath1.toString(), filepath2.toString());
+        String expected = new String(Files.readAllBytes(resourceDirectory.resolve("expectedStylishDiffOfJSONs.txt")));
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString(), "stylish");
 
         assertEquals(expected, actual);
 
@@ -62,35 +61,8 @@ public class DifferTest {
         Path filepath1 = resourceDirectory.resolve("File1.yml");
         Path filepath2 = resourceDirectory.resolve("File2.yml");
 
-        String expected =
-                """
-                {
-                  - chars1: [a, b, c]
-                  - chars2: [d, e, f]
-                  + chars2: true
-                  - checked: false
-                  + checked: true
-                  - default: null
-                  + default: [value1, value2]
-                  - id: 45
-                  + id: null
-                  - key1: value1
-                  + key2: value2
-                    numbers1: [1, 2, 3, 4]
-                  - numbers2: [2, 3, 4, 5]
-                  + numbers2: [22, 33, 44, 55]
-                  - numbers3: [3, 4, 5]
-                  + numbers4: [4, 5, 6]
-                  + obj1: {nestedKey=value, isNested=true}
-                  - setting1: Some value
-                  + setting1: Another value
-                  - setting2: 200
-                  + setting2: 300
-                  - setting3: true
-                  + setting3: none
-                }""";
-
-        String actual = Differ.generate(filepath1.toString(), filepath2.toString());
+        String expected = new String(Files.readAllBytes(resourceDirectory.resolve("expectedStylishDiffOfYAMLs.txt")));
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString(), "stylish");
 
         assertEquals(expected, actual);
 
@@ -117,33 +89,41 @@ public class DifferTest {
         Path filepath2 = resourceDirectory.resolve("File2.json");
 
         String actual = Differ.generate(filepath1.toString(), filepath2.toString(), "plain");
-        String expected =
-                """
-                Property 'chars2' was updated. From [complex value] to false
-                Property 'checked' was updated. From false to true
-                Property 'default' was updated. From null to [complex value]
-                Property 'id' was updated. From 45 to null
-                Property 'key1' was removed
-                Property 'key2' was added with value: 'value2'
-                Property 'numbers2' was updated. From [complex value] to [complex value]
-                Property 'numbers3' was removed
-                Property 'numbers4' was added with value: [complex value]
-                Property 'obj1' was added with value: [complex value]
-                Property 'setting1' was updated. From 'Some value' to 'Another value'
-                Property 'setting2' was updated. From 200 to 300
-                Property 'setting3' was updated. From true to 'none'""";
 
+        String expected = new String(Files.readAllBytes(resourceDirectory.resolve("expectedPlainDiffOfJSONs.txt")));
         assertEquals(expected, actual);
     }
 
     @Test
-    public void generateJSONDiffOfJSONFiles() throws IOException {
+    public void generatePlainFormatWithYAML() throws IOException {
+        Path filepath1 = resourceDirectory.resolve("File1.yml");
+        Path filepath2 = resourceDirectory.resolve("File2.yml");
+
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString(), "plain");
+
+        String expected = new String(Files.readAllBytes(resourceDirectory.resolve("expectedPlainDiffOfYAMLs.txt")));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void generateJSONFormatWithJSONs() throws IOException {
         Path filepath1 = resourceDirectory.resolve("File1.json");
         Path filepath2 = resourceDirectory.resolve("File2.json");
 
         String actual = Differ.generate(filepath1.toString(), filepath2.toString(), "json");
 
-        String expected = new String(Files.readAllBytes(resourceDirectory.resolve("JSONdiff.json")));
+        String expected = new String(Files.readAllBytes(resourceDirectory.resolve("expectedJSONDiffOfJSONs.json")));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void generateJSONFormatWithYAMLs() throws IOException {
+        Path filepath1 = resourceDirectory.resolve("File1.yml");
+        Path filepath2 = resourceDirectory.resolve("File2.yml");
+
+        String actual = Differ.generate(filepath1.toString(), filepath2.toString(), "json");
+
+        String expected = new String(Files.readAllBytes(resourceDirectory.resolve("expectedJSONDiffOfYAMLs.json")));
         assertEquals(expected, actual);
     }
 }

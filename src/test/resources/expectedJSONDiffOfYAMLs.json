@@ -1,0 +1,80 @@
+{
+  "chars1" : {
+    "type" : "deleted",
+    "value1" : [ "a", "b", "c" ],
+    "value2" : null
+  },
+  "chars2" : {
+    "type" : "modified",
+    "value1" : [ "d", "e", "f" ],
+    "value2" : true
+  },
+  "checked" : {
+    "type" : "modified",
+    "value1" : false,
+    "value2" : true
+  },
+  "default" : {
+    "type" : "modified",
+    "value1" : null,
+    "value2" : [ "value1", "value2" ]
+  },
+  "id" : {
+    "type" : "modified",
+    "value1" : 45,
+    "value2" : null
+  },
+  "key1" : {
+    "type" : "deleted",
+    "value1" : "value1",
+    "value2" : null
+  },
+  "key2" : {
+    "type" : "added",
+    "value1" : null,
+    "value2" : "value2"
+  },
+  "numbers1" : {
+    "type" : "no_changes",
+    "value1" : [ 1, 2, 3, 4 ],
+    "value2" : [ 1, 2, 3, 4 ]
+  },
+  "numbers2" : {
+    "type" : "modified",
+    "value1" : [ 2, 3, 4, 5 ],
+    "value2" : [ 22, 33, 44, 55 ]
+  },
+  "numbers3" : {
+    "type" : "deleted",
+    "value1" : [ 3, 4, 5 ],
+    "value2" : null
+  },
+  "numbers4" : {
+    "type" : "added",
+    "value1" : null,
+    "value2" : [ 4, 5, 6 ]
+  },
+  "obj1" : {
+    "type" : "added",
+    "value1" : null,
+    "value2" : {
+      "isNested" : true,
+      "nestedKey" : "value"
+    }
+  },
+  "setting1" : {
+    "type" : "modified",
+    "value1" : "Some value",
+    "value2" : "Another value"
+  },
+  "setting2" : {
+    "type" : "modified",
+    "value1" : 200,
+    "value2" : 300
+  },
+  "setting3" : {
+    "type" : "modified",
+    "value1" : true,
+    "value2" : "none"
+  }
+}

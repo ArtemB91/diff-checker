@@ -1,35 +1,34 @@
 package hexlet.code.formatters;
 
-import hexlet.code.Differ;
-
 import java.util.Map;
 import java.util.StringJoiner;
 
-public final class StylishFormatter implements IFormatter {
-    @Override
-    public String format(Map<String, Differ.DiffDescription> diff) {
+public final class StylishFormatter {
+    public static String format(Map<String, Object> diff) {
         StringJoiner joiner = new StringJoiner("\n");
         joiner.add("{");
         String strTemplate = "  %s %s: %s";
-        for (Map.Entry<String, Differ.DiffDescription> keyAndDesc: diff.entrySet()) {
+        for (Map.Entry<String, Object> keyAndDesc: diff.entrySet()) {
             String key = keyAndDesc.getKey();
-            Differ.DiffDescription diffDesc = keyAndDesc.getValue();
-            switch (diffDesc.getType()) {
-                case ADDED:
-                    joiner.add(String.format(strTemplate, "+", key, diffDesc.getSecondValue()));
+
+            Map<String, Object> diffDesc = (Map<String, Object>) keyAndDesc.getValue();
+            String type = (String) diffDesc.get("type");
+            switch (type) {
+                case "added":
+                    joiner.add(String.format(strTemplate, "+", key, diffDesc.get("value2")));
                     break;
-                case DELETED:
-                    joiner.add(String.format(strTemplate, "-", key, diffDesc.getFirstValue()));
+                case "deleted":
+                    joiner.add(String.format(strTemplate, "-", key, diffDesc.get("value1")));
                     break;
-                case MODIFIED:
-                    joiner.add(String.format(strTemplate, "-", key, diffDesc.getFirstValue()));
-                    joiner.add(String.format(strTemplate, "+", key, diffDesc.getSecondValue()));
+                case "modified":
+                    joiner.add(String.format(strTemplate, "-", key, diffDesc.get("value1")));
+                    joiner.add(String.format(strTemplate, "+", key, diffDesc.get("value2")));
                     break;
-                case NO_CHANGES:
-                    joiner.add(String.format(strTemplate, " ", key, diffDesc.getFirstValue()));
+                case "no_changes":
+                    joiner.add(String.format(strTemplate, " ", key, diffDesc.get("value1")));
                     break;
                 default:
-                    throw new RuntimeException(key + " - is invalid change type");
+                    throw new RuntimeException(type + " - is invalid change type");
             }
         }
         joiner.add("}");

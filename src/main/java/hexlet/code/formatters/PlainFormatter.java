@@ -1,70 +1,55 @@
 package hexlet.code.formatters;
 
-import hexlet.code.Differ;
-
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public final class PlainFormatter implements IFormatter {
+public final class PlainFormatter {
 
-    private static final Map<Class<?>, Class<?>> WRAPPER_TYPE_MAP;
-    static {
-        WRAPPER_TYPE_MAP = new HashMap<Class<?>, Class<?>>();
-        WRAPPER_TYPE_MAP.put(Integer.class, int.class);
-        WRAPPER_TYPE_MAP.put(Byte.class, byte.class);
-        WRAPPER_TYPE_MAP.put(Character.class, char.class);
-        WRAPPER_TYPE_MAP.put(Boolean.class, boolean.class);
-        WRAPPER_TYPE_MAP.put(Double.class, double.class);
-        WRAPPER_TYPE_MAP.put(Float.class, float.class);
-        WRAPPER_TYPE_MAP.put(Long.class, long.class);
-        WRAPPER_TYPE_MAP.put(Short.class, short.class);
-        WRAPPER_TYPE_MAP.put(Void.class, void.class);
-        WRAPPER_TYPE_MAP.put(String.class, String.class);
-    }
-    @Override
-    public String format(Map<String, Differ.DiffDescription> diff) {
+    public static String format(Map<String, Object> diff) {
         StringJoiner joiner = new StringJoiner("\n");
-        for (Map.Entry<String, Differ.DiffDescription> keyAndDesc : diff.entrySet()) {
+        for (Map.Entry<String, Object> keyAndDesc : diff.entrySet()) {
             String key = keyAndDesc.getKey();
-            Differ.DiffDescription diffDesc = keyAndDesc.getValue();
+            Map<String, Object> diffDesc = (Map<String, Object>) keyAndDesc.getValue();
 
             String row = "";
-            switch (diffDesc.getType()) {
-                case ADDED:
+
+            String type = (String) diffDesc.get("type");
+            switch (type) {
+                case "added":
                     row = String.format("Property '%s' was added with value: %s",
                             key,
-                            valueToString(diffDesc.getSecondValue()));
+                            valueToString(diffDesc.get("value2")));
                     joiner.add(row);
                     break;
-                case DELETED:
+                case "deleted":
                     row = String.format("Property '%s' was removed", key);
                     joiner.add(row);
                     break;
-                case MODIFIED:
+                case "modified":
                     row = String.format("Property '%s' was updated. From %s to %s",
                             key,
-                            valueToString(diffDesc.getFirstValue()),
-                            valueToString(diffDesc.getSecondValue()));
+                            valueToString(diffDesc.get("value1")),
+                            valueToString(diffDesc.get("value2")));
                     joiner.add(row);
                     break;
-                case NO_CHANGES:
+                case "no_changes":
                     break;
                 default:
-                    throw new RuntimeException(key + " - is invalid change type");
+                    throw new RuntimeException(type + " - is invalid change type");
             }
         }
         return joiner.toString();
     }
 
-    private String valueToString(Object value) {
+    private static String valueToString(Object value) {
 
         if (value == null) {
             return Objects.toString(null);
         }
 
-        if (isComplexValue(value)) {
+        if (value instanceof Map<?, ?> || value instanceof List<?>) {
             return "[complex value]";
         }
 
@@ -73,10 +58,6 @@ public final class PlainFormatter implements IFormatter {
         }
 
         return value.toString();
-    }
-
-    private boolean isComplexValue(Object source) {
-        return !WRAPPER_TYPE_MAP.containsKey(source.getClass());
     }
 
 }

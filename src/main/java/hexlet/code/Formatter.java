@@ -1,11 +1,12 @@
 package hexlet.code;
 
-import hexlet.code.formatters.IFormatter;
 import hexlet.code.formatters.JSONFormatter;
 import hexlet.code.formatters.PlainFormatter;
 import hexlet.code.formatters.StylishFormatter;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 
 public class Formatter {
 
@@ -14,31 +15,27 @@ public class Formatter {
         PLAIN,
         JSON
     }
-
-    public static IFormatter newFormatter(FormatType formatType) {
-
+    public static String format(Map<String, Object> diff, FormatType formatType) throws IOException {
         if (formatType == null) {
             return null;
         }
 
         if (formatType == FormatType.STYLISH) {
-            return new StylishFormatter();
+            return StylishFormatter.format(diff);
         }
 
         if (formatType == FormatType.PLAIN) {
-            return new PlainFormatter();
+            return PlainFormatter.format(diff);
         }
 
         if (formatType == FormatType.JSON) {
-            return new JSONFormatter();
+            return JSONFormatter.format(diff);
         }
 
         throw new RuntimeException(formatType + " - is invalid format type");
     }
 
-    public static IFormatter newFormatter() {
-        return new StylishFormatter(); // by default
-    }
+
 
     public static FormatType getFormatType(String format) {
         if (format == null) {
