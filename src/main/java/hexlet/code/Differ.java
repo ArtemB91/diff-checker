@@ -29,8 +29,7 @@ public class Differ {
 
         Map<String, Object> diff = Tree.getDiff(data1, data2);
 
-        Formatter.FormatType formatType = Formatter.getFormatType(format);
-        return Formatter.format(diff, formatType);
+        return Formatter.format(diff, format);
 
     }
 

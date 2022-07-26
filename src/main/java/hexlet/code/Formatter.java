@@ -15,10 +15,12 @@ public class Formatter {
         PLAIN,
         JSON
     }
-    public static String format(Map<String, Object> diff, FormatType formatType) throws IOException {
-        if (formatType == null) {
+    public static String format(Map<String, Object> diff, String format) throws IOException {
+        if (format == null) {
             return null;
         }
+
+        FormatType formatType = getFormatType(format);
 
         if (formatType == FormatType.STYLISH) {
             return StylishFormatter.format(diff);
@@ -37,7 +39,7 @@ public class Formatter {
 
 
 
-    public static FormatType getFormatType(String format) {
+    private static FormatType getFormatType(String format) {
         if (format == null) {
             return null;
         }
