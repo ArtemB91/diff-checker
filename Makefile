@@ -1,5 +1,7 @@
-run-dist:
-		./build/install/java-project-lvl2/bin/java-project-lvl2
+install:
+	./gradlew clean installDist
+start-dist:
+	./build/install/app/bin/app
 build:
 	./gradlew clean build
 report:
